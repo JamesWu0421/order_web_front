@@ -2,13 +2,20 @@
     <div class="container text-center mt-5">
     <h1>首頁</h1>
 
-    <!-- 按鈕 -->
+    <!-- 建立訂單按鈕 -->
     <button 
-        class="btn btn-primary mt-3" 
+        class="btn btn-primary mt-3 me-3" 
         data-bs-toggle="modal" 
         data-bs-target="#orderModal"
         @click="fetchOrder">
         產生訂單
+    </button>
+
+    <!-- 查看所有訂單按鈕 -->
+    <button 
+        class="btn btn-outline-secondary mt-3" 
+        @click="goToOrderList">
+        查看所有訂單
     </button>
 
     <!-- 浮空視窗 Modal -->
@@ -29,7 +36,7 @@
             </div>
             <div v-else>尚無訂單資料。</div>
             </div>
-            <div div class="modal-footer">
+            <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
             <button type="button" class="btn btn-success">確認建立</button>
             </div>
@@ -42,17 +49,19 @@
 <script setup>
 import { ref } from 'vue'
 import axios from 'axios'
+import { useRouter } from 'vue-router'
 
 const order = ref(null)
 const loading = ref(false)
 const error = ref(null)
+const router = useRouter()
 
+// 取得最新訂單
 const fetchOrder = async () => {
     loading.value = true
     error.value = null
     order.value = null
     try {
-    // 範例：呼叫後端 API
     const response = await axios.get('http://localhost:8080/api/orders/latest')
     order.value = response.data
     } catch (err) {
@@ -61,5 +70,10 @@ const fetchOrder = async () => {
     } finally {
     loading.value = false
     }
+}
+
+// 跳轉到訂單列表頁
+const goToOrderList = () => {
+    router.push('/orders')
 }
 </script>
